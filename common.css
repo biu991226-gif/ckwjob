@@ -1,0 +1,41 @@
+body {
+    font-family: sans-serif;
+    margin: 24px;
+    line-height: 1.6;
+}
+
+a {
+    margin-right: 12px;
+}
+
+table.x1 {
+    width: 900px;
+    border-collapse: collapse;
+}
+
+.x1 th,
+.x1 td {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.x2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.xx {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+}
+
+.x4 {
+    padding: 8px 14px;
+}
+
+.notice {
+    color: #666;
+}
