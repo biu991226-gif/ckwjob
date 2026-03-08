@@ -94,11 +94,8 @@ $isLoggedIn = $currentName !== "" && $currentRole !== "";
         <?php if ($isLoggedIn) { ?>
             <span class="nav-user-text">
                 ログイン中: <?php echo htmlspecialchars($currentName, ENT_QUOTES, "UTF-8"); ?>
-                （<?php echo htmlspecialchars($currentRole, ENT_QUOTES, "UTF-8"); ?>）
             </span>
-            <form action="logout.php" method="post" class="logout-form">
-                <input type="submit" value="logout" class="logout-btn">
-            </form>
+            <a href="logout.php">ログアウト</a>
         <?php } ?>
     </div>
 </div>

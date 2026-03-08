@@ -131,27 +131,6 @@ body.login-page .nav-user-text {
     font-size: 13px;
 }
 
-body.top-page .logout-form,
-body.login-page .logout-form {
-    margin: 0;
-}
-
-body.top-page .logout-btn,
-body.login-page .logout-btn {
-    padding: 5px 10px;
-    border: 1px solid #9fb4d4;
-    border-radius: 6px;
-    background: #ffffff;
-    color: #103968;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-body.top-page .logout-btn:hover,
-body.login-page .logout-btn:hover {
-    background: #eaf2ff;
-}
-
 body.top-page .top-hero,
 body.login-page .top-hero {
     background: linear-gradient(135deg, #184780, #2f70ba);
