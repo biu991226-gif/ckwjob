@@ -2,6 +2,12 @@ body {
     font-family: sans-serif;
     margin: 24px;
     line-height: 1.6;
+    background-color: #d9e6f7;
+    background-image: url("assets/smooth-motion-flow-blue-dynamic-wave-background.jpg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 a {
@@ -64,43 +70,90 @@ table.x1 {
 }
 
 /* index.php 専用スタイル */
-body.top-page {
+body.top-page,
+body.login-page {
     font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
     margin: 0;
     padding: 24px 0 40px;
-    background-color: #edf2f8;
-    background-image:
-        radial-gradient(rgba(255, 255, 255, 0.28) 0.5px, transparent 0.5px),
-        linear-gradient(165deg, #edf3fb 0%, #e8eff8 45%, #dde8f5 100%);
-    background-size: 3px 3px, 100% 100%;
-    background-attachment: fixed;
     color: #1f2937;
 }
 
-body.top-page .page-wrap {
+body.top-page .page-wrap,
+body.login-page .page-wrap {
     width: 920px;
     margin: 0 auto;
 }
 
-body.top-page .top-nav {
+body.top-page .top-nav,
+body.login-page .top-nav {
     background: #0f2747;
     border-radius: 10px;
     padding: 10px 14px;
     margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-body.top-page .top-nav a {
+body.top-page .top-nav-left,
+body.login-page .top-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: wrap;
+}
+
+body.top-page .top-nav-right,
+body.login-page .top-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body.top-page .top-nav a,
+body.login-page .top-nav a {
     color: #ffffff;
     text-decoration: none;
     margin-right: 16px;
     font-size: 14px;
 }
 
-body.top-page .top-nav a:hover {
+body.top-page .top-nav a:hover,
+body.login-page .top-nav a:hover {
     text-decoration: underline;
 }
 
-body.top-page .top-hero {
+body.top-page .nav-user-text,
+body.login-page .nav-user-text {
+    color: #dbe7f8;
+    font-size: 13px;
+}
+
+body.top-page .logout-form,
+body.login-page .logout-form {
+    margin: 0;
+}
+
+body.top-page .logout-btn,
+body.login-page .logout-btn {
+    padding: 5px 10px;
+    border: 1px solid #9fb4d4;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #103968;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+body.top-page .logout-btn:hover,
+body.login-page .logout-btn:hover {
+    background: #eaf2ff;
+}
+
+body.top-page .top-hero,
+body.login-page .top-hero {
     background: linear-gradient(135deg, #184780, #2f70ba);
     color: #ffffff;
     border-radius: 12px;
@@ -108,39 +161,47 @@ body.top-page .top-hero {
     margin-bottom: 16px;
 }
 
-body.top-page .top-hero h1 {
+body.top-page .top-hero h1,
+body.login-page .top-hero h1 {
     margin: 0;
     font-size: 30px;
 }
 
-body.top-page .top-hero p {
+body.top-page .top-hero p,
+body.login-page .top-hero p {
     margin: 8px 0 0;
     font-size: 14px;
     opacity: 0.95;
 }
 
-body.top-page table.x1 {
+body.top-page table.x1,
+body.login-page table.x1 {
     width: 100%;
     background: #ffffff;
 }
 
 body.top-page .x1 th,
-body.top-page .x1 td {
+body.top-page .x1 td,
+body.login-page .x1 th,
+body.login-page .x1 td {
     border: 1px solid #d7dfeb;
     padding: 12px;
 }
 
-body.top-page .x2 {
+body.top-page .x2,
+body.login-page .x2 {
     font-size: 22px;
     background: #f8fafc;
 }
 
-body.top-page .xx {
+body.top-page .xx,
+body.login-page .xx {
     border: 1px solid #c7d2e3;
     border-radius: 6px;
 }
 
-body.top-page .x4 {
+body.top-page .x4,
+body.login-page .x4 {
     border: 0;
     border-radius: 6px;
     background: #1d67b5;
@@ -148,11 +209,13 @@ body.top-page .x4 {
     cursor: pointer;
 }
 
-body.top-page .x4:hover {
+body.top-page .x4:hover,
+body.login-page .x4:hover {
     background: #16579a;
 }
 
-body.top-page .top-table {
+body.top-page .top-table,
+body.login-page .top-table {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(18, 35, 57, 0.08);
@@ -161,6 +224,31 @@ body.top-page .top-table {
 body.top-page .top-search-form .xx {
     margin-top: 4px;
     margin-bottom: 10px;
+}
+
+body.login-page .auth-header-tabs {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+body.login-page .auth-tab-title {
+    display: inline-block;
+    padding: 4px 0;
+    color: #4b5f78;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 3px solid transparent;
+}
+
+body.login-page .auth-tab-title.is-active {
+    color: #153f70;
+    border-bottom: 3px solid #1d67b5;
+}
+
+body.login-page .auth-tab-title:hover {
+    color: #1d67b5;
 }
 
 body.top-page .job-item {

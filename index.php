@@ -64,6 +64,8 @@ $currentRole = "";
 if (isset($_SESSION["role"])) {
     $currentRole = (string) $_SESSION["role"];
 }
+
+$isLoggedIn = $currentName !== "" && $currentRole !== "";
 ?>
 <!DOCTYPE html>
 <html>
@@ -75,11 +77,30 @@ if (isset($_SESSION["role"])) {
 <body class="top-page">
 <div class="page-wrap">
 <div class="top-nav">
-    <a href="index.php">トップ</a>
-    <a href="jobs.php">求人一覧</a>
-    <a href="login.php">ログイン / 会員登録</a>
-    <a href="my.php">個人ページ</a>
-    <a href="manage_jobs.php">求人管理</a>
+    <div class="top-nav-left">
+        <a href="index.php">トップ</a>
+        <a href="jobs.php">求人一覧</a>
+        <?php if (!$isLoggedIn) { ?>
+            <a href="login.php">ログイン / 会員登録</a>
+        <?php } ?>
+        <?php if ($currentRole === "job_seeker") { ?>
+            <a href="my.php">個人ページ</a>
+        <?php } ?>
+        <?php if ($currentRole === "company") { ?>
+            <a href="manage_jobs.php">求人管理</a>
+        <?php } ?>
+    </div>
+    <div class="top-nav-right">
+        <?php if ($isLoggedIn) { ?>
+            <span class="nav-user-text">
+                ログイン中: <?php echo htmlspecialchars($currentName, ENT_QUOTES, "UTF-8"); ?>
+                （<?php echo htmlspecialchars($currentRole, ENT_QUOTES, "UTF-8"); ?>）
+            </span>
+            <form action="logout.php" method="post" class="logout-form">
+                <input type="submit" value="logout" class="logout-btn">
+            </form>
+        <?php } ?>
+    </div>
 </div>
 
 <div class="top-hero">
@@ -87,12 +108,7 @@ if (isset($_SESSION["role"])) {
     <p>エリア・職種・給与から、自分に合う仕事を探せます。</p>
 </div>
 
-<?php if ($currentName !== "") { ?>
-<p class="message-info">
-    ログイン中: <?php echo htmlspecialchars($currentName, ENT_QUOTES, "UTF-8"); ?>
-    （<?php echo htmlspecialchars($currentRole, ENT_QUOTES, "UTF-8"); ?>）
-</p>
-<?php } else { ?>
+<?php if (!$isLoggedIn) { ?>
 <p class="notice">未ログインです。応募や管理機能を使う場合はログインしてください。</p>
 <?php } ?>
 
