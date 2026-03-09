@@ -6,24 +6,6 @@ if (isset($_GET["id"])) {
     $jobId = (int) $_GET["id"];
 }
 
-$currentName = "";
-if (isset($_SESSION["name"])) {
-    $currentName = trim((string) $_SESSION["name"]);
-}
-
-$currentRole = "";
-if (isset($_SESSION["role"])) {
-    $currentRole = (string) $_SESSION["role"];
-}
-
-$currentUserId = 0;
-if (isset($_SESSION["user_id"])) {
-    $currentUserId = (int) $_SESSION["user_id"];
-}
-
-$isLoggedIn = $currentName !== "" && $currentRole !== "";
-$isAlreadyApplied = false;
-
 $job = null;
 $dbError = "";
 
@@ -55,19 +37,6 @@ if ($dbError === "") {
             $job = $result->fetch_assoc();
             $result->free();
             $stmt->close();
-
-            if ($job !== null && $currentRole === "job_seeker" && $currentUserId > 0) {
-                // 応募済み判定を行い、二重応募のボタン表示を防ぐ。
-                $appStmt = $conn->prepare("SELECT id FROM applications WHERE job_id = ? AND job_seeker_user_id = ? LIMIT 1");
-                if ($appStmt !== false) {
-                    $appStmt->bind_param("ii", $jobId, $currentUserId);
-                    $appStmt->execute();
-                    $appResult = $appStmt->get_result();
-                    $isAlreadyApplied = $appResult->fetch_assoc() !== null;
-                    $appResult->free();
-                    $appStmt->close();
-                }
-            }
         } else {
             $dbError = "求人詳細の取得に失敗しました。";
         }
@@ -75,6 +44,18 @@ if ($dbError === "") {
         $conn->close();
     }
 }
+
+$currentName = "";
+if (isset($_SESSION["name"])) {
+    $currentName = trim((string) $_SESSION["name"]);
+}
+
+$currentRole = "";
+if (isset($_SESSION["role"])) {
+    $currentRole = (string) $_SESSION["role"];
+}
+
+$isLoggedIn = $currentName !== "" && $currentRole !== "";
 ?>
 <!DOCTYPE html>
 <html>
@@ -138,8 +119,6 @@ if ($dbError === "") {
             企業アカウントでは応募できません。
         <?php } elseif ((string) $job["status"] !== "open") { ?>
             この求人は現在応募を受け付けていません。
-        <?php } elseif ($isAlreadyApplied) { ?>
-            <span class="status-applied">応募済み</span>です。
         <?php } else { ?>
             <form action="apply.php" method="post">
                 <input type="hidden" name="job_id" value="<?php echo (int) $job["id"]; ?>">

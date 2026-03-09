@@ -114,11 +114,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             if (!$insertOk) {
                                 $errors[] = "会員登録に失敗しました。";
                             } else {
-                                $newUserId = (int) $conn->insert_id;
                                 $_SESSION["name"] = $name;
                                 $_SESSION["role"] = $role;
-                                $_SESSION["user_id"] = $newUserId;
-                                $_SESSION["email"] = $email;
                                 $message = "会員登録が完了しました。";
                                 $redirectUrl = "my.php";
                             }
@@ -144,11 +141,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         if (!$isValidPassword) {
                             $errors[] = "メールアドレスまたはパスワードが正しくありません。";
                         } else {
-                            $loginUserId = (int) $user["id"];
                             $_SESSION["name"] = (string) $user["name"];
                             $_SESSION["role"] = (string) $user["role"];
-                            $_SESSION["user_id"] = $loginUserId;
-                            $_SESSION["email"] = $email;
                             $message = "ログインが完了しました。";
                             $redirectUrl = "my.php";
                         }
