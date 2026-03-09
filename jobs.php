@@ -6,6 +6,24 @@ if (isset($_GET["keyword"])) {
     $keyword = trim((string) $_GET["keyword"]);
 }
 
+$currentName = "";
+if (isset($_SESSION["name"])) {
+    $currentName = trim((string) $_SESSION["name"]);
+}
+
+$currentRole = "";
+if (isset($_SESSION["role"])) {
+    $currentRole = (string) $_SESSION["role"];
+}
+
+$currentUserId = 0;
+if (isset($_SESSION["user_id"])) {
+    $currentUserId = (int) $_SESSION["user_id"];
+}
+
+$isLoggedIn = $currentName !== "" && $currentRole !== "";
+$appliedJobMap = [];
+
 $jobs = [];
 $dbError = "";
 
@@ -53,20 +71,23 @@ if ($conn->connect_error) {
         }
     }
 
+    if ($dbError === "" && $currentRole === "job_seeker" && $currentUserId > 0 && count($jobs) > 0) {
+        // 一覧表示用に、当該ユーザーの応募済み求人IDを取得する。
+        $appStmt = $conn->prepare("SELECT job_id FROM applications WHERE job_seeker_user_id = ?");
+        if ($appStmt !== false) {
+            $appStmt->bind_param("i", $currentUserId);
+            $appStmt->execute();
+            $appResult = $appStmt->get_result();
+            while ($row = $appResult->fetch_assoc()) {
+                $appliedJobMap[(int) $row["job_id"]] = true;
+            }
+            $appResult->free();
+            $appStmt->close();
+        }
+    }
+
     $conn->close();
 }
-
-$currentName = "";
-if (isset($_SESSION["name"])) {
-    $currentName = trim((string) $_SESSION["name"]);
-}
-
-$currentRole = "";
-if (isset($_SESSION["role"])) {
-    $currentRole = (string) $_SESSION["role"];
-}
-
-$isLoggedIn = $currentName !== "" && $currentRole !== "";
 ?>
 <!DOCTYPE html>
 <html>
@@ -109,9 +130,9 @@ $isLoggedIn = $currentName !== "" && $currentRole !== "";
 <?php } ?>
 
 <table class="x1 table-like top-table">
-<tr><th colspan="5" class="x2">求人一覧</th></tr>
+<tr><th colspan="6" class="x2">求人一覧</th></tr>
 <tr>
-    <td colspan="5">
+    <td colspan="6">
         <form action="jobs.php" method="get" class="top-search-form">
             <label for="keyword">キーワード</label><br>
             <input type="text" name="keyword" id="keyword" class="xx" value="<?php echo htmlspecialchars($keyword, ENT_QUOTES, "UTF-8"); ?>">
@@ -124,11 +145,12 @@ $isLoggedIn = $currentName !== "" && $currentRole !== "";
     <th>給与</th>
     <th>勤務地</th>
     <th>投稿日</th>
+    <th>応募状況</th>
     <th>詳細</th>
 </tr>
 <?php if (count($jobs) === 0) { ?>
 <tr>
-    <td colspan="5">該当する求人はありません。</td>
+    <td colspan="6">該当する求人はありません。</td>
 </tr>
 <?php } ?>
 <?php foreach ($jobs as $job) { ?>
@@ -137,6 +159,17 @@ $isLoggedIn = $currentName !== "" && $currentRole !== "";
     <td><?php echo htmlspecialchars((string) $job["salary"], ENT_QUOTES, "UTF-8"); ?></td>
     <td><?php echo htmlspecialchars((string) $job["area"], ENT_QUOTES, "UTF-8"); ?></td>
     <td><?php echo htmlspecialchars(date("Y/m/d", strtotime((string) $job["created_at"])), ENT_QUOTES, "UTF-8"); ?></td>
+    <td>
+        <?php if ($currentRole === "job_seeker" && $currentUserId > 0) { ?>
+            <?php if (isset($appliedJobMap[(int) $job["id"]])) { ?>
+                <span class="status-applied">応募済み</span>
+            <?php } else { ?>
+                未応募
+            <?php } ?>
+        <?php } else { ?>
+            -
+        <?php } ?>
+    </td>
     <td><a href="job_detail.php?id=<?php echo (int) $job["id"]; ?>">見る</a></td>
 </tr>
 <?php } ?>
