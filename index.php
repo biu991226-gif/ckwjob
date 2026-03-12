@@ -83,7 +83,7 @@ $isLoggedIn = $currentName !== "" && $currentRole !== "";
         <?php if (!$isLoggedIn) { ?>
             <a href="login.php">ログイン / 会員登録</a>
         <?php } ?>
-        <?php if ($currentRole === "job_seeker") { ?>
+        <?php if ($isLoggedIn) { ?>
             <a href="my.php">個人ページ</a>
         <?php } ?>
         <?php if ($currentRole === "company") { ?>

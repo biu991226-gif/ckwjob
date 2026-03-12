@@ -42,7 +42,7 @@ if ($conn->connect_error) {
     $conn->set_charset($config["db_charset"]);
 
     if ($keyword === "") {
-        $sql = "SELECT id, title, salary, area, created_at FROM jobs WHERE status = 'open' ORDER BY created_at DESC LIMIT 50";
+        $sql = "SELECT id, title, salary, area, status, created_at FROM jobs ORDER BY created_at DESC LIMIT 50";
         $result = $conn->query($sql);
         if ($result !== false) {
             while ($row = $result->fetch_assoc()) {
@@ -54,7 +54,7 @@ if ($conn->connect_error) {
         }
     } else {
         // キーワード検索時は部分一致でタイトルなどを絞り込む。
-        $sql = "SELECT id, title, salary, area, created_at FROM jobs WHERE status = 'open' AND (title LIKE ? OR area LIKE ? OR salary LIKE ? OR description LIKE ?) ORDER BY created_at DESC LIMIT 50";
+        $sql = "SELECT id, title, salary, area, status, created_at FROM jobs WHERE (title LIKE ? OR area LIKE ? OR salary LIKE ? OR description LIKE ?) ORDER BY created_at DESC LIMIT 50";
         $stmt = $conn->prepare($sql);
         if ($stmt !== false) {
             $likeKeyword = "%" . $keyword . "%";
@@ -105,7 +105,7 @@ if ($conn->connect_error) {
         <?php if (!$isLoggedIn) { ?>
             <a href="login.php">ログイン / 会員登録</a>
         <?php } ?>
-        <?php if ($currentRole === "job_seeker") { ?>
+        <?php if ($isLoggedIn) { ?>
             <a href="my.php">個人ページ</a>
         <?php } ?>
         <?php if ($currentRole === "company") { ?>
@@ -144,9 +144,9 @@ if ($conn->connect_error) {
     <th>タイトル</th>
     <th>給与</th>
     <th>勤務地</th>
+    <th>募集状態</th>
     <th>投稿日</th>
     <th>応募状況</th>
-    <th>詳細</th>
 </tr>
 <?php if (count($jobs) === 0) { ?>
 <tr>
@@ -155,9 +155,20 @@ if ($conn->connect_error) {
 <?php } ?>
 <?php foreach ($jobs as $job) { ?>
 <tr>
-    <td><?php echo htmlspecialchars((string) $job["title"], ENT_QUOTES, "UTF-8"); ?></td>
+    <td>
+        <a href="job_detail.php?id=<?php echo (int) $job["id"]; ?>">
+            <?php echo htmlspecialchars((string) $job["title"], ENT_QUOTES, "UTF-8"); ?>
+        </a>
+    </td>
     <td><?php echo htmlspecialchars((string) $job["salary"], ENT_QUOTES, "UTF-8"); ?></td>
     <td><?php echo htmlspecialchars((string) $job["area"], ENT_QUOTES, "UTF-8"); ?></td>
+    <td>
+        <?php if ((string) $job["status"] === "open") { ?>
+            <span class="status-open">募集中</span>
+        <?php } else { ?>
+            <span class="status-closed">已结束</span>
+        <?php } ?>
+    </td>
     <td><?php echo htmlspecialchars(date("Y/m/d", strtotime((string) $job["created_at"])), ENT_QUOTES, "UTF-8"); ?></td>
     <td>
         <?php if ($currentRole === "job_seeker" && $currentUserId > 0) { ?>
@@ -170,7 +181,6 @@ if ($conn->connect_error) {
             -
         <?php } ?>
     </td>
-    <td><a href="job_detail.php?id=<?php echo (int) $job["id"]; ?>">見る</a></td>
 </tr>
 <?php } ?>
 </table>
